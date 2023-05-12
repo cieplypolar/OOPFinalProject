@@ -43,7 +43,7 @@ public class GamePanel extends JPanel {
     public void paintComponent(Graphics g ){
         super.paintComponent(g);
 
-        g.drawImage(img, 0, 0, null);
+        g.drawImage(img.getSubimage(0 ,0, 64, 40), (int) xDelta, (int) yDelta, null);
 
     }
 
@@ -53,7 +53,7 @@ public class GamePanel extends JPanel {
     public void changeYDelta(int value) {
         this.yDelta += value;
     }
-    public void setRectPos(int x, int y){
+    public void setPos(int x, int y){
         this.xDelta = x;
         this.yDelta = y;
     }
