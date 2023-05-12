@@ -16,23 +16,39 @@ public class GamePanel extends JPanel {
     private float yDelta = 200;
     private float xDir = 1f;
     private float yDir = 1f;
-    private BufferedImage img;
+    private BufferedImage[] adventurerIdleSword;
+    private int aniTick, aniIndex, aniSpeed = 20;
     public GamePanel(){
         setPanelSize();
         this.mouseInputs = new MouseInputs(this);
-        importImg();
+        loadAnimations();
         addKeyListener(new KeyboardInputs(this));
         addMouseListener(mouseInputs);
         addMouseMotionListener(mouseInputs);
     }
 
-    private void importImg() {
-        InputStream is = getClass().getResourceAsStream("/adventurer-Sheet.png");
+    private void loadAnimations() {
+        adventurerIdleSword = new BufferedImage[4];
+        for (int i = 0; i < adventurerIdleSword.length; ++i){
+            adventurerIdleSword[i] = importImg("/idlesword/adventurer-idle-2-0" + i + ".png");
+        }
+    }
+
+    private BufferedImage importImg(String path) {
+        InputStream is = getClass().getResourceAsStream(path);
         try {
-            img = ImageIO.read(is);
+            return ImageIO.read(is);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     private void setPanelSize() {
@@ -40,10 +56,21 @@ public class GamePanel extends JPanel {
         setPreferredSize(size);
     }
 
+    private void updateAnimation(){
+        aniTick++;
+        if (aniTick >= aniSpeed){
+            aniTick = 0;
+            aniIndex++;
+            aniIndex %= adventurerIdleSword.length;
+        }
+    }
+
     public void paintComponent(Graphics g ){
         super.paintComponent(g);
 
-        g.drawImage(img.getSubimage(0 ,0, 64, 40), (int) xDelta, (int) yDelta, null);
+        updateAnimation();
+
+        g.drawImage(adventurerIdleSword[aniIndex], (int) xDelta, (int) yDelta, null);
 
     }
 
