@@ -51,77 +51,50 @@ public class Game implements Runnable{
 
         }
         */
-private class runFrame extends Thread{
+
+
+
     @Override
-    public void run(){
+    public void run() {
         double timePerFrame = 1000000000.0 / FPS; // nanoseconds
-
-        long lastFrame = System.nanoTime();
+        double timePerTick = 1000000000.0 / tick;
         long now = System.nanoTime();
-
+        long lastTick = System.nanoTime();
+        long lastFrame = System.nanoTime();
         int frames = 0;
+        int ticks = 0;
+
         long lastCheck = System.currentTimeMillis();
+
+
+
+
 
         while (true) {
 
             now = System.nanoTime();
 
-           if(now-lastFrame>=timePerFrame){
-            gamePanel.repaint();
-            lastFrame=now;
-            frames++;
-           }
+            if(now-lastFrame>=timePerFrame){
+                gamePanel.repaint();
+                lastFrame=now;
+                frames++;
+            }
+            if(now - lastTick>= timePerTick){
+                // update()
+                lastTick=now;
+                ticks++;
 
+            }
 
 
             if (System.currentTimeMillis() - lastCheck >= 1000) {
                 lastCheck = System.currentTimeMillis();
-                System.out.println("FPS: " + frames);
+                System.out.println("FPS: " + frames + " TICK: " + ticks);
                 frames = 0;
+                ticks=0;
             }
         }
-    }
-
-}
-private class runTick extends Thread{
-        @Override
-        public void run() {
-            double timePerTick = 1000000000.0 / tick;
-            long now = System.nanoTime();
-            long lastTick = System.nanoTime();
-            int ticks = 0;
-            double deltaTick =0;
-            long lastCheck = System.currentTimeMillis();
-
-            while(true){
-
-                now = System.nanoTime();
-                deltaTick+=(now - lastTick) / timePerTick;
-                lastTick=now;
-                if(deltaTick>=1){
-                    // update() TODO
-                     ticks++;
-                     deltaTick--;
-                }
-
-                if (System.currentTimeMillis() - lastCheck >= 1000) {
-                    lastCheck = System.currentTimeMillis();
-                    System.out.println("TICK: " + ticks);
-                    ticks = 0;
-                }
-
-            }
-
-        }
 
 
-    }
-
-    @Override
-    public void run() {
-        Thread f = new runFrame();
-        Thread t = new runTick();
-        f.start();
-        t.start();
     }
 }
