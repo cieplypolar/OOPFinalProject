@@ -17,40 +17,7 @@ public class Game implements Runnable{
         gameLoopThread = new Thread(this);
         gameLoopThread.start();
     }
-/*private class runFrame extends Thread{ // **************** alternative version ****************
-        @Override
-        public void run(){
-            double timePerFrame = 1000000000.0 / FPS; // nanoseconds
 
-            long lastFrame = System.nanoTime();
-            long now = System.nanoTime();
-
-            int frames = 0;
-            double deltaFrame =0;
-            long lastCheck = System.currentTimeMillis();
-
-            while (true) {
-
-                now = System.nanoTime();
-                deltaFrame+=(now - lastFrame) / timePerFrame;
-                lastFrame=now;
-
-                if(deltaFrame>=1){
-                   gamePanel.repaint();
-                    frames++;
-                    deltaFrame--;
-                }
-
-                if (System.currentTimeMillis() - lastCheck >= 1000) {
-                    lastCheck = System.currentTimeMillis();
-                    System.out.println("FPS: " + frames);
-                    frames = 0;
-                }
-            }
-        }
-
-        }
-        */
 private class runFrame extends Thread{
     @Override
     public void run(){
@@ -90,18 +57,17 @@ private class runTick extends Thread{
             long now = System.nanoTime();
             long lastTick = System.nanoTime();
             int ticks = 0;
-            double deltaTick =0;
             long lastCheck = System.currentTimeMillis();
 
             while(true){
 
                 now = System.nanoTime();
-                deltaTick+=(now - lastTick) / timePerTick;
-                lastTick=now;
-                if(deltaTick>=1){
+
+                if(now-lastTick>=timePerTick){
                     // update() TODO
+                     lastTick=now;
                      ticks++;
-                     deltaTick--;
+
                 }
 
                 if (System.currentTimeMillis() - lastCheck >= 1000) {
